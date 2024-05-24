@@ -19,8 +19,8 @@ const DetailsPage = () => {
     const [playVideo, setPlayVideo] = useState(false);
     const [playVideoId, setPlayVideoId] = useState("");
 
-    console.log("data", data);
-    console.log("star cast", castData);
+    // console.log("data", data);
+    // console.log("star cast", castData);
 
     const handlePlayVideo = (data) => {
         setPlayVideoId(data);
