@@ -1,25 +1,60 @@
-import logo from './logo.svg';
+import { Outlet } from 'react-router-dom';
 import './App.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import MobileNavigation from './components/MobileNavigation';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setBannerData, setImageURL } from './store/movieoSlice';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const fetchTrendingData = async() => {
+            try {
+                const response = await axios.get('/trending/all/week', {
+                    params: {
+                        language: 'es-MX'
+                    }
+                });
+                dispatch(setBannerData(response.data.results));
+                // console.log('response', response.data.results);
+            } catch (error) {
+                console.log("error", error);
+            }
+        }
+
+        const fetchConfiguration = async() => {
+            try {
+                const response = await axios.get("/configuration", {
+                    params: {
+                        language: 'es-MX'
+                    }
+                });
+
+                dispatch(setImageURL(response.data.images.secure_base_url+"original"));
+                // console.log('configuration data', response.data.images.secure_base_url+"original");
+            } catch (error) {
+                console.log("error", error);
+            }
+        }
+
+        fetchTrendingData();
+        fetchConfiguration();
+    }, [dispatch]);
+
+    return (
+        <main className='pb-14 lg:pb-0'>
+            <Header />
+                <div className='min-h-[90vh]'>
+                    <Outlet />
+                </div>
+            <Footer />
+            <MobileNavigation />
+        </main>
+    );
 }
 
 export default App;
